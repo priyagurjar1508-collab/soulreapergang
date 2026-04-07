@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOUL_REAPERS_V15.7_SECURE</title>
+    <style>
+        :root { --bg: #0a0a0a; --panel: #161616; --text: #e0e0e0; --accent: #00ff41; --danger: #ff3e3e; --border: #333; --input-bg: #000; --glow: 0 0 10px rgba(0, 255, 65, 0.3); }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Courier New', Courier, monospace; margin: 0; padding: 20px; background-image: radial-gradient(circle, #1a1a1a 1px, transparent 1px); background-size: 30px 30px; }
+        .wrapper { max-width: 1100px; margin: 0 auto; border: 2px solid var(--accent); padding: 15px; background: rgba(26, 26, 26, 0.95); box-shadow: var(--glow); }
+        .header { text-align: center; border-bottom: 2px solid var(--accent); padding-bottom: 15px; margin-bottom: 20px; }
+        .header h1 { margin: 0; font-size: 32px; letter-spacing: 8px; color: var(--accent); }
+        .sub-header { display: flex; justify-content: space-between; background: #000; padding: 8px 15px; font-size: 12px; border: 1px solid var(--border); margin-bottom: 10px; color: var(--accent); }
+        .nav-bar { display: flex; gap: 5px; margin-bottom: 20px; flex-wrap: wrap; }
+        .nav-btn { flex: 1; min-width: 120px; background: #222; color: var(--accent); border: 1px solid var(--accent); padding: 12px; cursor: pointer; font-weight: bold; font-family: inherit; text-transform: uppercase; }
+        .nav-btn.active { background: var(--accent); color: #000; box-shadow: var(--glow); }
+        .section { border: 1px solid var(--border); background: var(--panel); padding: 20px; margin-bottom: 20px; }
+        .section-title { background: var(--accent); color: #000; padding: 5px 12px; font-weight: bold; display: inline-block; margin-bottom: 20px; font-size: 14px; }
+        .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        label { display: block; font-size: 11px; margin-bottom: 8px; color: var(--accent); font-weight: bold;}
+        input, select, textarea { width: 100%; background: var(--input-bg); border: 1px solid var(--border); color: var(--accent); padding: 10px; font-family: inherit; outline: none; }
+        .btn { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 10px 20px; cursor: pointer; text-transform: uppercase; font-family: inherit; font-weight: bold; }
+        .btn:hover { background: var(--accent); color: #000; }
+        .btn-danger { color: var(--danger); border-color: var(--danger); }
+        .table-container { overflow-x: auto; margin-top: 15px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; background: #000; }
+        th { background: #111; color: var(--accent); padding: 12px; text-align: left; border-bottom: 2px solid var(--accent); }
+        td { padding: 10px; border-bottom: 1px solid #222; font-size: 13px; }
+        .log-box { font-size: 11px; height: 150px; overflow-y: auto; background: #000; padding: 10px; border: 1px solid #444; color: #00ff41; }
+        .feed-box { height: 350px; overflow-y: auto; padding: 10px; background: #050505; border: 1px solid #222; margin-top: 10px;}
+        .status-dot { height: 8px; width: 8px; background-color: var(--accent); border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .footer-ticker { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; border-top: 1px solid var(--accent); padding: 5px; font-size: 11px; color: var(--accent); text-align: center; }
+        .del-link { color: var(--danger); font-size: 10px; cursor: pointer; text-decoration: underline; margin-top: 5px; display: inline-block; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="header">
+        <h1>SOUL_REAPERS™</h1>
+        <div style="font-size: 12px; letter-spacing: 2px;">ENCRYPTED TACTICAL NETWORK // V15.7</div>
+    </div>
+
+    <div class="sub-header">
+        <span id="sys-date">DATE: --/--/----</span>
+        <span id="sys-clock">TIME: 00:00:00</span>
+        <span id="auth-status" style="color:var(--danger)">AUTH: DISCONNECTED</span>
+    </div>
+
+    <div class="nav-bar">
+        <button class="nav-btn active" id="btn-main" onclick="showTab('main')">OPERATIONS</button>
+        <button class="nav-btn" id="btn-intel" onclick="showTab('intel')">INTEL_FEED</button>
+        <button class="nav-btn" id="btn-db" onclick="showTab('db')">VAULT_DB</button>
+        <button class="nav-btn" id="btn-reports" onclick="showTab('reports')">MEMBER_REPORTS</button>
+    </div>
+
+    <div id="tab-main" class="tab-content">
+        <div class="section">
+            <div class="section-title">Operative Enrollment</div>
+            <div class="grid-form">
+                <div><label>FULL NAME</label><input type="text" id="mName" oninput="generateID()" placeholder="Legal Name"></div>
+                <div><label>ALIAS / CALLSIGN</label><input type="text" id="fName" placeholder="Codename"></div>
+                <div><label>SYSTEM ID</label><input type="text" id="mID" readonly></div>
+                <div>
+                    <label>RANK</label>
+                    <select id="mRole">
+                        <option>REAPER (MEMBER)</option>
+                        <option>ELITE (HEADMEMBER)</option>
+                        <option>CAPTAIN</option>
+                        <option>COMMANDER (HIGHERPOST)</option>
+                    </select>
+                </div>
+                <div>
+                    <label>CONTACT</label>
+                    <div style="display:flex; gap:5px;">
+                        <input type="text" id="mPhone" maxlength="10">
+                        <button class="btn" onclick="sendOTP()" style="white-space:nowrap; font-size:10px;">SEND_OTP</button>
+                    </div>
+                </div>
+                <div><label>VERIFICATION</label><input type="text" id="vInput" placeholder="Enter OTP"></div>
+                <div><label>SECTOR/LOCATION</label><input type="text" id="mLoc"></div>
+            </div>
+            <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px;">
+                <input type="password" id="regKey" placeholder="REGISTRATION_KEY" style="width: 200px; margin-right: 10px;">
+                <button class="btn" onclick="register()">AUTHORIZE & SAVE</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Direct Broadcast</div>
+            <input type="text" id="cmdTitle" placeholder="OBJECTIVE TITLE" style="margin-bottom: 10px;">
+            <textarea id="cmdMsg" rows="3" placeholder="TRANSMIT MESSAGE..."></textarea>
+            <div style="margin-top:10px;">
+                <input type="password" id="cmdKey" placeholder="AUTHORIZATION_KEY" style="width: 200px; margin-right: 10px;">
+                <button class="btn" onclick="postCommand()">EXECUTE BROADCAST</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-intel" class="tab-content" style="display:none;">
+        <div style="display:grid; grid-template-columns: 1fr 300px; gap: 20px;">
+            <div class="section">
+                <div class="section-title">Live Mission Logs</div>
+                <div id="intel-lock-ui">
+                    <p style="text-align:center;">DECRYPTION KEY REQUIRED</p>
+                    <input type="password" id="intelPass" placeholder="ENTER ACCESS KEY" style="margin-bottom:10px;">
+                    <button class="btn" style="width:100%" onclick="unlockIntel()">DECRYPT FEED</button>
+                </div>
+                <div id="intel-content-ui" style="display:none;">
+                    <div id="missionFeed" class="feed-box"></div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-title">System Status</div>
+                <div style="font-size: 20px; text-align: center; color: var(--accent); margin-bottom: 20px;">
+                    ASSETS: <span id="stat-total">0</span>
+                </div>
+                <div class="log-box" id="logBox"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-db" class="tab-content" style="display:none;">
+        <div class="section">
+            <div class="section-title">Central Intelligence Database</div>
+            <div id="db-lock" style="text-align:center;">
+                <p>⚠️ CLASSIFIED DATA - AUTHORIZATION REQUIRED</p>
+                <input type="password" id="dbKey" placeholder="ENTER VAULT KEY" style="width: 250px; display:block; margin: 10px auto;">
+                <button class="btn" onclick="unlockDB()">ACCESS VAULT</button>
+            </div>
+            <div id="db-content" style="display:none;">
+                <input type="text" id="search" placeholder="SEARCH ASSETS..." onkeyup="filterTable()" style="margin-bottom:15px;">
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>STATUS</th><th>ID</th><th>NAME</th><th>RANK</th><th>PHONE</th><th>LOCATION</th><th>ACTION</th></tr></thead>
+                        <tbody id="memberTable"></tbody>
+                    </table>
+                </div>
+                <button class="btn btn-danger" style="margin-top:20px;" onclick="purge()">SYSTEM PURGE</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-reports" class="tab-content" style="display:none;">
+        <div class="section">
+            <div class="section-title">Public Intel Reporting</div>
+            <div class="grid-form">
+                <div><label>MEMBER NAME / ID</label><input type="text" id="repName"></div>
+                <div><label>REPORT SUBJECT</label><input type="text" id="repSubject"></div>
+            </div>
+            <textarea id="repMsg" rows="4" placeholder="ENTER MESSAGE..." style="margin-top:15px;"></textarea>
+            <button class="btn" style="margin-top:10px; width:100%;" onclick="submitReport()">SUBMIT REPORT</button>
+        </div>
+        <div class="section">
+            <div class="section-title">Report Archive</div>
+            <div id="reportFeed" class="feed-box"></div>
+        </div>
+    </div>
+</div>
+
+<div class="footer-ticker">SECURE LINK: ACTIVE | ENCRYPTION: OMEGA | <span id="uptime">UPTIME: 0s</span></div>
+
+<script>
+    // Security Variables
+    let _strikes = 0;
+    const _0xHIDDEN = {
+        _r: "bmlvag==", // join
+        _a: "cGFlcg==", // reap
+        _c: "ZG1j",     // cmd
+        _i: "d2VpYg==", // order
+        _p: "dGl4ZQ=="  // exit
+    };
+
+    // Decode function (Key ko palatne ke liye)
+    const g_k = (k) => atob(_0xHIDDEN[k]).split("").reverse().join("");
+
+    // Self-Destruct Protocol
+    function _WIPE() {
+        localStorage.clear();
+        document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:20%'>CRITICAL ERROR: SYSTEM PURGED</h1>";
+        setTimeout(() => location.reload(), 3000);
+    }
+
+    function _check(isCorrect) {
+        if (!isCorrect) {
+            _strikes++;
+            if (_strikes >= 5) { _WIPE(); }
+            else { alert(`AUTH FAILED: Attempt ${_strikes}/5. System wipes at 5.`); }
+            return false;
+        }
+        return true;
+    }
+
+    // Audio Engine
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playTone(freq, type, duration, vol) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + duration);
+    }
+
+    const sfx = {
+        type: () => playTone(1400 + (Math.random() * 300), 'square', 0.05, 0.02),
+        click: () => playTone(1200, 'square', 0.05, 0.05),
+        nav: () => { playTone(200, 'sine', 0.1, 0.2); setTimeout(()=>playTone(600, 'square', 0.05, 0.05), 30); },
+        deny: () => { playTone(150, 'sawtooth', 0.3, 0.2); playTone(100, 'sawtooth', 0.3, 0.2); },
+        grant: () => { playTone(600, 'sine', 0.1, 0.1); setTimeout(()=>playTone(900, 'sine', 0.2, 0.1), 60); },
+        purge: () => { let n=0; const inv = setInterval(()=>{ playTone(Math.random()*200+50, 'sawtooth', 0.1, 0.1); if(n++>25) clearInterval(inv); }, 40); }
+    };
+
+    let startTime = Date.now();
+    let generatedOTP = null;
+
+    function updateClock() {
+        const d = new Date();
+        document.getElementById('sys-date').innerText = "DATE: " + d.toLocaleDateString();
+        document.getElementById('sys-clock').innerText = "TIME: " + d.toLocaleTimeString();
+        document.getElementById('uptime').innerText = "UPTIME: " + Math.floor((Date.now() - startTime)/1000) + "s";
+    }
+    setInterval(updateClock, 1000);
+
+    function showTab(tabId) {
+        sfx.nav();
+        document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('tab-' + tabId).style.display = 'block';
+        document.getElementById('btn-' + tabId).classList.add('active');
+        if(tabId === 'reports') renderReports();
+        if(tabId === 'intel') renderFeed();
+    }
+
+    function generateID() {
+        let name = document.getElementById('mName').value.trim().toUpperCase();
+        let prefix = name.substring(0,3) || "USR";
+        document.getElementById('mID').value = `SR-${prefix}-${Math.floor(1000 + Math.random() * 9000)}`;
+    }
+
+    function sendOTP() {
+        sfx.click();
+        const phone = document.getElementById('mPhone').value;
+        if(phone.length !== 10) { sfx.deny(); return alert("INVALID PHONE"); }
+        generatedOTP = Math.floor(100000 + Math.random() * 900000);
+        alert(`HQ SECURE CODE: ${generatedOTP}`);
+    }
+
+    function register() {
+        if(!_check(document.getElementById('regKey').value === g_k('_r') && document.getElementById('vInput').value == generatedOTP)) return;
+        sfx.grant();
+        const asset = { id: document.getElementById('mID').value, name: document.getElementById('mName').value, role: document.getElementById('mRole').value, phone: document.getElementById('mPhone').value, loc: document.getElementById('mLoc').value || "UNKNOWN" };
+        let db = JSON.parse(localStorage.getItem('sr_secure_v2')) || [];
+        db.push(asset);
+        localStorage.setItem('sr_secure_v2', JSON.stringify(db));
+        alert("REGISTRATION COMPLETE");
+        location.reload();
+    }
+
+    function unlockDB() {
+        if(_check(document.getElementById('dbKey').value === g_k('_a'))) {
+            sfx.grant();
+            document.getElementById('db-lock').style.display = 'none';
+            document.getElementById('db-content').style.display = 'block';
+            document.getElementById('auth-status').innerText = "AUTH: ADMIN";
+            document.getElementById('auth-status').style.color = "var(--accent)";
+            loadTable();
+        } else { sfx.deny(); }
+    }
+
+    function unlockIntel() {
+        if(_check(document.getElementById('intelPass').value === g_k('_i'))) {
+            sfx.grant();
+            document.getElementById('intel-lock-ui').style.display = 'none';
+            document.getElementById('intel-content-ui').style.display = 'block';
+            renderFeed();
+        } else { sfx.deny(); }
+    }
+
+    function loadTable() {
+        const db = JSON.parse(localStorage.getItem('sr_secure_v2')) || [];
+        document.getElementById('stat-total').innerText = db.length;
+        document.getElementById('memberTable').innerHTML = db.map((m, i) => `
+            <tr><td><span class="status-dot"></span></td><td>${m.id}</td><td>${m.name}</td><td>${m.role}</td><td>${m.phone}</td><td>${m.loc}</td><td><button class="btn-danger" onclick="deleteEntry(${i})">X</button></td></tr>
+        `).join('');
+    }
+
+    function postCommand() {
+        if(!_check(document.getElementById('cmdKey').value === g_k('_c'))) return;
+        sfx.grant();
+        let feed = JSON.parse(localStorage.getItem('sr_feed_v2')) || [];
+        feed.unshift({ title: document.getElementById('cmdTitle').value, msg: document.getElementById('cmdMsg').value, time: new Date().toLocaleString() });
+        localStorage.setItem('sr_feed_v2', JSON.stringify(feed));
+        renderFeed();
+    }
+
+    function renderFeed() {
+        const feed = JSON.parse(localStorage.getItem('sr_feed_v2')) || [];
+        document.getElementById('missionFeed').innerHTML = feed.map((f, i) => `
+            <div style="border-left:2px solid var(--accent); padding:10px; margin-bottom:10px; background:rgba(255,255,255,0.02)">
+                <b>> ${f.title}</b><br>${f.msg}<br>
+                <span class="del-link" onclick="deleteFeedItem(${i})">[DELETE_COMMAND]</span>
+            </div>`).join('');
+    }
+
+    function deleteFeedItem(i) {
+        if(_check(prompt("ENTER AUTHORIZATION:") === g_k('_c'))) {
+            sfx.grant();
+            let feed = JSON.parse(localStorage.getItem('sr_feed_v2'));
+            feed.splice(i, 1);
+            localStorage.setItem('sr_feed_v2', JSON.stringify(feed));
+            renderFeed();
+        } else { sfx.deny(); }
+    }
+
+    function submitReport() {
+        sfx.click();
+        let reports = JSON.parse(localStorage.getItem('sr_rep_v2')) || [];
+        reports.unshift({ name: document.getElementById('repName').value, sub: document.getElementById('repSubject').value, msg: document.getElementById('repMsg').value, time: new Date().toLocaleString() });
+        localStorage.setItem('sr_rep_v2', JSON.stringify(reports));
+        renderReports();
+    }
+
+    function renderReports() {
+        const reports = JSON.parse(localStorage.getItem('sr_rep_v2')) || [];
+        document.getElementById('reportFeed').innerHTML = reports.map((r, i) => `
+            <div style="border-bottom:1px solid #333; padding:10px; background:rgba(0,255,65,0.03)">
+                <b>[FROM: ${r.name}]</b><br>SUB: ${r.sub}<br><small>${r.msg}</small><br>
+                <span class="del-link" onclick="deleteReport(${i})">[DELETE]</span>
+            </div>`).join('');
+    }
+
+    function deleteReport(i) {
+        let reports = JSON.parse(localStorage.getItem('sr_rep_v2'));
+        reports.splice(i, 1);
+        localStorage.setItem('sr_rep_v2', JSON.stringify(reports));
+        renderReports();
+    }
+
+    function filterTable() {
+        const val = document.getElementById('search').value.toUpperCase();
+        const rows = document.getElementById('memberTable').getElementsByTagName('tr');
+        for(let row of rows) { row.style.display = row.innerText.toUpperCase().includes(val) ? "" : "none"; }
+    }
+
+    function deleteEntry(i) {
+        if(!confirm("DELETE?")) return;
+        let db = JSON.parse(localStorage.getItem('sr_secure_v2'));
+        db.splice(i, 1);
+        localStorage.setItem('sr_secure_v2', JSON.stringify(db));
+        loadTable();
+    }
+
+    function purge() {
+        if(prompt("ENTER PURGE CODE:") === g_k('_p')) { sfx.purge(); _WIPE(); }
+        else { _check(false); }
+    }
+
+    window.onload = () => { updateClock(); loadTable(); };
+</script>
+</body>
+</html>
